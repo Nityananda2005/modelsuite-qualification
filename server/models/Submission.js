@@ -10,9 +10,11 @@ const submissionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    fileUrl: {
-      type: String,
-    },
+    fileUrls: [
+  {
+    type: String,
+  },
+],
     notes: {
       type: String,
     },

@@ -4,7 +4,7 @@ import SubmissionReviewModal from '../../components/admin/SubmissionReviewModal'
 import { fetchAllSubmissions } from '../../api/submissions';
 
 const REVIEW_STATUS_CLASS = {
-  Pending:  'status-badge-Submitted',
+  Pending: 'status-badge-Submitted',
   Approved: 'status-badge-Approved',
   Rejected: 'status-badge-Rejected',
 };
@@ -22,38 +22,79 @@ const SubmissionsPage = () => {
     }
   };
 
-  // eslint-disable-next-line
-  useEffect(() => { loadSubmissions(); }, []);
-  const pending  = submissions.filter((s) => s.reviewStatus === 'Pending').length;
-  const approved = submissions.filter((s) => s.reviewStatus === 'Approved').length;
-  const rejected = submissions.filter((s) => s.reviewStatus === 'Rejected').length;
+  useEffect(() => {
+    loadSubmissions();
+  }, []);
 
-  const thCls = 'text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.7px] text-text-faint border-b border-border whitespace-nowrap';
-  const tdCls = 'px-5 py-4 border-b border-border align-middle';
+  const pending = submissions.filter(
+    (s) => s.reviewStatus === 'Pending'
+  ).length;
+
+  const approved = submissions.filter(
+    (s) => s.reviewStatus === 'Approved'
+  ).length;
+
+  const rejected = submissions.filter(
+    (s) => s.reviewStatus === 'Rejected'
+  ).length;
+
+  const thCls =
+    'text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.7px] text-text-faint border-b border-border whitespace-nowrap';
+
+  const tdCls =
+    'px-5 py-4 border-b border-border align-middle';
 
   return (
     <div className="flex min-h-screen bg-bg-dark">
       <Sidebar />
 
       <main className="ml-60 flex-1 px-10 py-9">
-
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-[26px] font-bold tracking-tight text-text-primary">Submissions</h1>
-          <p className="mt-1 text-sm text-text-muted">Review talent submissions and approve or reject them.</p>
+          <h1 className="text-[26px] font-bold tracking-tight text-text-primary">
+            Submissions
+          </h1>
+
+          <p className="mt-1 text-sm text-text-muted">
+            Review talent submissions and approve or reject them.
+          </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-7">
           {[
-            { label: 'Total',    value: submissions.length, color: 'text-text-primary' },
-            { label: 'Pending',  value: pending,            color: 'text-info'         },
-            { label: 'Approved', value: approved,           color: 'text-success'      },
-            { label: 'Rejected', value: rejected,           color: 'text-danger'       },
+            {
+              label: 'Total',
+              value: submissions.length,
+              color: 'text-text-primary',
+            },
+            {
+              label: 'Pending',
+              value: pending,
+              color: 'text-info',
+            },
+            {
+              label: 'Approved',
+              value: approved,
+              color: 'text-success',
+            },
+            {
+              label: 'Rejected',
+              value: rejected,
+              color: 'text-danger',
+            },
           ].map(({ label, value, color }) => (
-            <div key={label} className="bg-bg-card border border-border rounded-xl px-6 py-5 flex flex-col gap-2 hover:border-border-light transition-colors">
-              <span className="text-[12px] font-medium text-text-muted uppercase tracking-[0.6px]">{label}</span>
-              <span className={`text-[32px] font-bold tracking-tight ${color}`}>{value}</span>
+            <div
+              key={label}
+              className="bg-bg-card border border-border rounded-xl px-6 py-5 flex flex-col gap-2 hover:border-border-light transition-colors"
+            >
+              <span className="text-[12px] font-medium text-text-muted uppercase tracking-[0.6px]">
+                {label}
+              </span>
+
+              <span className={`text-[32px] font-bold tracking-tight ${color}`}>
+                {value}
+              </span>
             </div>
           ))}
         </div>
@@ -61,8 +102,10 @@ const SubmissionsPage = () => {
         {/* Table */}
         <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-            <h2 className="text-[16px] font-semibold text-text-primary">All Submissions</h2>
-            
+            <h2 className="text-[16px] font-semibold text-text-primary">
+              All Submissions
+            </h2>
+
             <span className="text-[12px] text-text-faint bg-bg-input border border-border px-2.5 py-1 rounded-full">
               {submissions.length} total
             </span>
@@ -80,17 +123,19 @@ const SubmissionsPage = () => {
                     <th className={thCls}>Task</th>
                     <th className={thCls}>Talent</th>
                     <th className={thCls}>Notes</th>
-                    <th className={thCls}>File</th>
-                    
+                    <th className={thCls}>Files</th>
                     <th className={thCls}>Submitted</th>
                     <th className={thCls}>Review Status</th>
                     <th className={thCls}>Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {submissions.map((sub) => (
-                    <tr key={sub._id} className="border-b border-border last:border-0 hover:bg-bg-hover transition-colors">
-
+                    <tr
+                      key={sub._id}
+                      className="border-b border-border last:border-0 hover:bg-bg-hover transition-colors"
+                    >
                       {/* Task */}
                       <td className={`${tdCls} max-w-[180px]`}>
                         <span className="block font-medium text-text-primary truncate">
@@ -104,46 +149,66 @@ const SubmissionsPage = () => {
                           <div className="w-[26px] h-[26px] rounded-full avatar-talent flex items-center justify-center text-[11px] font-bold text-white shrink-0">
                             {sub.talentId?.name?.[0] ?? '?'}
                           </div>
-                          <span className="text-text-primary">{sub.talentId?.name || '—'}</span>
+
+                          <span className="text-text-primary">
+                            {sub.talentId?.name || '—'}
+                          </span>
                         </div>
                       </td>
 
-                      {/* Notes — truncated, no tooltip */}
-                      
-                      <td className={`${tdCls} max-w-[200px]`}>
+                      {/* Notes */}
+                      <td className={`${tdCls} max-w-[220px]`}>
                         <span className="block text-text-muted truncate text-[13px]">
-                          {sub.notes || <span className="italic text-text-faint">No notes</span>}
+                          {sub.notes || 'No notes'}
                         </span>
                       </td>
 
-                      {/* File link */}
+                      {/* Files */}
                       <td className={tdCls}>
-                        {sub.fileUrl ? (
-                          <a href={sub.fileUrl} target="_blank" rel="noreferrer"
-                            className="text-primary text-[13px] hover:text-secondary underline underline-offset-2 transition-colors">
-                            View ↗
-                          </a>
+                        {sub.fileUrls && sub.fileUrls.length > 0 ? (
+                          <div className="flex flex-col gap-1">
+                            {sub.fileUrls.map((url, index) => (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-primary text-[13px] hover:text-secondary underline underline-offset-2"
+                              >
+                                File {index + 1} ↗
+                              </a>
+                            ))}
+                          </div>
                         ) : (
-                          <span className="text-text-faint text-[13px] italic">None</span>
+                          <span className="text-text-faint italic">
+                            No Files
+                          </span>
                         )}
                       </td>
 
-                      {/* Submitted at — raw ISO */}
-                      <td className={`${tdCls} text-text-muted text-[13px] whitespace-nowrap`}>
-                        {sub.createdAt}
+                      {/* Submitted */}
+                      <td className={`${tdCls} text-[13px] text-text-muted whitespace-nowrap`}>
+                        {new Date(sub.createdAt).toLocaleString()}
                       </td>
 
-                      {/* Review status */}
+                      {/* Review Status */}
                       <td className={tdCls}>
-                        <span className={`inline-block px-2.5 py-[3px] rounded-full text-[11px] font-semibold ${REVIEW_STATUS_CLASS[sub.reviewStatus] || 'status-badge-Submitted'}`}>
-                          {sub.reviewStatus || 'Pending'}
+                        <span
+                          className={`inline-block px-2.5 py-[3px] rounded-full text-[11px] font-semibold ${
+                            REVIEW_STATUS_CLASS[sub.reviewStatus] ||
+                            'status-badge-Submitted'
+                          }`}
+                        >
+                          {sub.reviewStatus}
                         </span>
                       </td>
 
                       {/* Actions */}
                       <td className={tdCls}>
-                        <button onClick={() => setReviewTarget(sub)}
-                          className="px-3.5 py-1.5 bg-primary/10 text-primary border border-primary/30 rounded-lg text-[12px] font-semibold cursor-pointer hover:bg-primary/20 transition-colors font-sans whitespace-nowrap">
+                        <button
+                          onClick={() => setReviewTarget(sub)}
+                          className="px-3.5 py-1.5 bg-primary/10 text-primary border border-primary/30 rounded-lg text-[12px] font-semibold hover:bg-primary/20 transition-colors"
+                        >
                           Review
                         </button>
                       </td>
@@ -160,7 +225,10 @@ const SubmissionsPage = () => {
         <SubmissionReviewModal
           submission={reviewTarget}
           onClose={() => setReviewTarget(null)}
-          onReviewed={() => { setReviewTarget(null); loadSubmissions(); }}
+          onReviewed={() => {
+            setReviewTarget(null);
+            loadSubmissions();
+          }}
         />
       )}
     </div>
