@@ -1,12 +1,15 @@
-﻿const Task = require('../models/Task');
+const Task = require('../models/Task');
 
 // @desc  Get all available (Open) tasks
 // @route GET /api/talent/tasks/available
 // @access Talent
 const getAvailableTasks = async (req, res) => {
   try {
-    // (loose schema allows this inconsistent state from seed data)
-    const tasks = await Task.find({ status: 'Open' })
+    // Show tasks that are either unassigned OR specifically assigned to this user
+    const tasks = await Task.find({
+      status: 'Open',
+      $or: [{ assignedTo: null }, { assignedTo: req.user._id }]
+    })
       .populate('createdBy', 'name')
       .sort({ createdAt: -1 });
 
@@ -21,8 +24,11 @@ const getAvailableTasks = async (req, res) => {
 // @access Talent
 const getMyTasks = async (req, res) => {
   try {
-    // all come back mixed together with no grouping
-    const tasks = await Task.find({ assignedTo: req.user._id })
+    // Only show claimed/submitted tasks here. Open tasks remain in Available Tasks.
+    const tasks = await Task.find({
+      assignedTo: req.user._id,
+      status: { $ne: 'Open' }
+    })
       .sort({ updatedAt: -1 });
 
     res.json(tasks);
@@ -36,20 +42,24 @@ const getMyTasks = async (req, res) => {
 // @access Talent
 const claimTask = async (req, res) => {
   try {
-    // Two talents can both pass the status === 'Open' check before either saves,
-    // then both write Claimed. Proper fix: findOneAndUpdate({ _id, status: 'Open' })
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        status: 'Open',
+        $or: [{ assignedTo: null }, { assignedTo: req.user._id }]
+      },
+      { status: 'Claimed', assignedTo: req.user._id },
+      { new: true }
+    );
 
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      // If task wasn't updated, check if it even exists to give a proper 404 vs 409
+      const existingTask = await Task.findById(req.params.id);
+      if (!existingTask) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+      return res.status(409).json({ message: 'Task has already been claimed.' });
     }
-
-    if (task.status !== 'Open') {
-      return res.status(400).json({ message: 'Task is no longer available' });
-    }
-    task.status = 'Claimed';
-    task.assignedTo = req.user._id;
-    await task.save();
 
     res.json(task);
   } catch (error) {
