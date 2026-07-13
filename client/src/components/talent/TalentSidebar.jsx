@@ -88,6 +88,7 @@ const TalentSidebar = () => {
             title="Sign out"
             className="logout-btn">
             <IconLogout />
+            <span>Logout</span>
           </button>
         </div>
       </div>
