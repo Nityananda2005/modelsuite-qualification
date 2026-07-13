@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import SubmitTaskModal from './SubmitTaskModal';
+import { formatDate } from '../../utils/formatDate';
 
 /* ── Status badge classes ── */
 const STATUS_CLASS = {
@@ -26,15 +27,7 @@ const IconUpload = () => (
   </svg>
 );
 
-const fmtDate = (raw) => {
-  if (!raw) return null;
-  try {
-    const d = new Date(raw);
-    if (isNaN(d)) return raw;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  } catch { return raw; }
-};
-
+// Uses imported formatDate
 const MyTasksList = ({ tasks, onRefresh }) => {
   const [submitTarget, setSubmitTarget] = useState(null);
 
@@ -72,10 +65,10 @@ const MyTasksList = ({ tasks, onRefresh }) => {
                 style={{ fontSize: '13.5px', color: '#E5E2E1', fontFamily: 'Inter, sans-serif' }}>
                 {task.title || 'Untitled Task'}
               </p>
-              {fmtDate(task.dueDate) && (
+              {formatDate(task.dueDate) && (
                 <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: '#4B5563' }}>
                   <IconCalendar />
-                  Due {fmtDate(task.dueDate)}
+                  Due {formatDate(task.dueDate)}
                 </p>
               )}
             </div>

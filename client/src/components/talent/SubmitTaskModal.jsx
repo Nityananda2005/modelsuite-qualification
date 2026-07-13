@@ -1,5 +1,6 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { submitTask } from '../../api/submissions';
+import { formatDate } from '../../utils/formatDate';
 
 const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
   const [files, setFiles] = useState([]);
@@ -42,7 +43,7 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
         <div className="px-6 py-3.5 bg-bg-surface border-b border-border">
           <p className="text-[14px] font-semibold text-text-primary">{task.title || 'Untitled Task'}</p>
           {task.dueDate && (
-            <p className="text-[12px] text-text-faint mt-0.5">Due: {task.dueDate}</p>
+            <p className="text-[12px] text-text-faint mt-0.5">Due: {formatDate(task.dueDate)}</p>
           )}
         </div>
 

@@ -1,4 +1,5 @@
-﻿import { reviewSubmission } from "../../api/submissions";
+import { reviewSubmission } from "../../api/submissions";
+import { formatDate } from "../../utils/formatDate";
 
 const REVIEW_STATUS_CLASS = {
   Pending: "status-badge-Submitted",
@@ -65,7 +66,7 @@ const SubmissionReviewModal = ({ submission, onClose, onReviewed }) => {
             <div className="flex items-center gap-3 mt-2">
               {task.dueDate && (
                 <span className="text-[12px] text-text-faint">
-                  Due: {task.dueDate}
+                  Due: {formatDate(task.dueDate)}
                 </span>
               )}
 
