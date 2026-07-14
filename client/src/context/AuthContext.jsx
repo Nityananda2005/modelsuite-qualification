@@ -1,6 +1,7 @@
-﻿import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 
-const AuthContext = createContext(null);
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   // — if token is expired, user stays "logged in" until a request fails
@@ -25,5 +26,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

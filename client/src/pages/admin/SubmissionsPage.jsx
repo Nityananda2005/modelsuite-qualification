@@ -24,7 +24,21 @@ const SubmissionsPage = () => {
   };
 
   useEffect(() => {
-    loadSubmissions();
+    let active = true;
+    const load = async () => {
+      try {
+        const { data } = await fetchAllSubmissions();
+        if (active) {
+          setSubmissions(data);
+        }
+      } catch {
+        alert('Failed to load submissions');
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const pending = submissions.filter(

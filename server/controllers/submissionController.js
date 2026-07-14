@@ -1,14 +1,10 @@
-﻿const Submission = require("../models/Submission");
+const Submission = require("../models/Submission");
 const Task = require("../models/Task");
 
 // @desc Submit a task with file upload
 // @route POST /api/submissions/:taskId
 // @access Talent
 const submitTask = async (req, res) => {
-  console.log("========== NEW SUBMISSION ==========");
-  console.log("req.files:");
-  console.log(req.files);
-
   const { taskId } = req.params;
   const { notes } = req.body;
 
@@ -17,21 +13,15 @@ const submitTask = async (req, res) => {
     const fileUrls =
       req.files && req.files.length > 0
         ? req.files.map(
-            (file) => `http://localhost:5000/uploads/${file.filename}`
-          )
+          (file) => `http://localhost:5000/uploads/${file.filename}`
+        )
         : [];
-
-    console.log("Generated fileUrls:");
-    console.log(fileUrls);
 
     // Find existing submission
     let submission = await Submission.findOne({
       taskId,
       talentId: req.user._id,
     });
-
-    console.log("Existing submission:");
-    console.log(submission);
 
     if (submission) {
       submission.fileUrls = fileUrls;
@@ -41,9 +31,6 @@ const submitTask = async (req, res) => {
       submission.set("fileUrl", undefined);
 
       await submission.save();
-
-      console.log("Updated submission:");
-      console.log(submission);
     } else {
       submission = await Submission.create({
         taskId,
@@ -51,9 +38,6 @@ const submitTask = async (req, res) => {
         fileUrls,
         notes,
       });
-
-      console.log("Created submission:");
-      console.log(submission);
     }
 
     // Update task status
@@ -61,15 +45,8 @@ const submitTask = async (req, res) => {
       status: "Submitted",
     });
 
-    console.log("Final response:");
-    console.log(submission);
-    console.log("========== END ==========");
-
     res.status(201).json(submission);
   } catch (error) {
-    console.log("ERROR:");
-    console.log(error);
-
     res.status(500).json({
       message: error.message,
     });
